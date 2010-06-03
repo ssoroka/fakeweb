@@ -22,7 +22,7 @@ module FakeWeb
       !responders_for(method, uri).empty?
     end
 
-    def response_for(method, uri, &block)
+    def responder_for(method, uri)
       responders = responders_for(method, uri)
       return nil if responders.empty?
 
@@ -35,7 +35,19 @@ module FakeWeb
         end
       end
 
-      next_responder.response(&block)
+      next_responder
+    end
+
+    def response_for(method, uri, &block)
+      responder = responder_for(method, uri)
+      return nil if responder.nil?
+      responder.response(&block)
+    end
+
+    def curl_response_for(method, uri, &block)
+      responder = responder_for(method, uri)
+      return nil if responder.nil?
+      responder.curl_response(&block)
     end
 
 
